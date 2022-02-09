@@ -1,8 +1,9 @@
 import sys
 from collections import deque
 
-# Stores data and points to children nodes when used in a heap.
+
 class Node:
+    # Stores data and points to children nodes when used in a heap.
     def __init__(self, data):
         self.data = data
         self.left = None
@@ -31,59 +32,61 @@ class Node:
 
     def set_data(self):
         return self.data
-    
+
     def get_frequency(self):
         return self.data[0]
-    
+
     def get_letter(self):
         try:
             return self.data[1]
         except IndexError:
             return -1
 
-    # For debugging Node. 
+    # For debugging Node.
     def __repr__(self):
         return f"Node({self.get_data()})"
 
-# For printing nodes in a heap
+
 class Queue():
+    # For printing nodes in a heap
     def __init__(self):
         self.q = deque()
-        
-    def enq(self,value):
+
+    def enq(self, value):
         self.q.appendleft(value)
-        
+
     def deq(self):
         if len(self.q) > 0:
             return self.q.pop()
         else:
             return None
-    
+
     def __len__(self):
         return len(self.q)
-    
+
     # For debugging Queue.
     def __repr__(self):
         if len(self.q) > 0:
-            s = "<enqueue here>\n_________________\n" 
+            s = "<enqueue here>\n_________________\n"
             s += "\n_________________\n".join([str(item) for item in self.q])
             s += "\n_________________\n<dequeue here>"
             return s
         else:
             return "<queue is empty>"
 
-# Array implementation of a minimum heap used as a priority queue
+
 class MinHeap:
+    # Array implementation of a minimum heap used as a priority queue
     def __init__(self):
         self.heap = list()
         self.size = 0
 
-    # Inserts node at the end of the head and then ensures that each parent node 
+    # Inserts node at the end of the head and then ensures that each parent node
     # is greater than its children nodes.
     def insert(self, node):
         self.heap.append(node)
         self.size += 1
-        
+
         if len(self.heap) <= 1:
             return
 
@@ -120,26 +123,26 @@ class MinHeap:
         self.heap[0] = self.heap[-1]
         self.heap.pop()
         self.size -= 1
-        
+
         if self.size == 0:
             return min_node
 
-        # Loop for checking if the new first node is smaller than than it's children. 
-        # If not, the first node is switched with the smaller child node. The process 
-        # is repeated for the new child node and its children until all child nodes are 
+        # Loop for checking if the new first node is smaller than than it's children.
+        # If not, the first node is switched with the smaller child node. The process
+        # is repeated for the new child node and its children until all child nodes are
         # again smaller than their parent.
         parent, parent_index, left, left_index, right, right_index = (
             self.get_node_family(0)
         )
-        
+
         while True:
             # If there is a left and a right node, and one is smaller than the parent,
             # the parent and the child are swapped and the process begins again with
-            # the child as the parent. If the child nodes are not smaller than the 
+            # the child as the parent. If the child nodes are not smaller than the
             # parent, the heap sorted correctly and returns.
             if left and right:
-                if (left.get_frequency() < parent.get_frequency() and 
-                    left.get_frequency() <= right.get_frequency()):
+                if (left.get_frequency() < parent.get_frequency() and
+                        left.get_frequency() <= right.get_frequency()):
 
                     self.heap[parent_index] = left
                     self.heap[left_index] = parent
@@ -192,33 +195,33 @@ class MinHeap:
             # If there no children nodes, the heap is ordered correctly.
             else:
                 return min_node
-    
+
     # Gets the node and the input index and the associated children and child indexes.
     def get_node_family(self, node_index):
         node = self.heap[node_index]
         left_child_index = 2*node_index + 1
         if len(self.heap) > left_child_index:
             left_child_node = self.heap[left_child_index]
-        else: 
+        else:
             left_child_node = None
-        
+
         right_child_index = 2*node_index + 2
         if len(self.heap) > right_child_index:
             right_child_node = self.heap[right_child_index]
         else:
             right_child_node = None
-        
-        return (node, 
-            node_index, 
-            left_child_node, 
-            left_child_index, 
-            right_child_node, 
-            right_child_index
-        )
 
-    # Recursively removes the smalles two nodes and makes them the children of 
-    # a new node that is the sum of their two values. Then it inserts the new 
-    # parent node back into the heap. The process ends when there is one node 
+        return (node,
+                node_index,
+                left_child_node,
+                left_child_index,
+                right_child_node,
+                right_child_index
+                )
+
+    # Recursively removes the smalles two nodes and makes them the children of
+    # a new node that is the sum of their two values. Then it inserts the new
+    # parent node back into the heap. The process ends when there is one node
     # left in the heap.
     def merge_nodes(self):
         if self.size <= 1:
@@ -233,7 +236,7 @@ class MinHeap:
         self.insert(new_node)
 
         self.merge_nodes()
-        
+
         return self.get_min()
 
     def get_min(self):
@@ -242,6 +245,7 @@ class MinHeap:
         else:
             return None
     # For debugging min heap.
+
     def __repr__(self):
         s = "Min Heap\n"
         previous_level = 0
@@ -249,14 +253,15 @@ class MinHeap:
         for index, node in enumerate(self.heap):
             if index == 2**level - 1:
                 level += 1
-                
+
             if level == previous_level:
-                s += " | " + str(node) 
+                s += " | " + str(node)
             else:
                 s += "\n" + str(node)
                 previous_level = level
-            
+
         return s
+
 
 class HuffmanTree:
     def __init__(self, root):
@@ -273,8 +278,8 @@ class HuffmanTree:
         self._generate_map(self.root)
         return self.map
 
-    # Recursively calls itself adding characters to the end of a string 
-    # for each call until a leaf node is reached to generate a code for 
+    # Recursively calls itself adding characters to the end of a string
+    # for each call until a leaf node is reached to generate a code for
     # the letter at each leaf node.
     def _generate_map(self, node, string=""):
         # If their are no children nodes, a leave node has been reached, so add
@@ -291,26 +296,30 @@ class HuffmanTree:
             if node.has_right_child():
                 self._generate_map(node.get_right_child(), string + "1")
             return
-    
+
     # Turns message into an encoded message by replacing characters with with
     # Huffman code replacements.
     def encode(self, data):
         code_map = self.generate_map()
-    
+
         encoded_data = ""
         for char in data:
             code = code_map[char]
-            encoded_data += code 
+            encoded_data += code
         return encoded_data
 
     # Decodes a message that has been encoded with Huffman encoding. Uses the Huffman
-    # Tree used to encode to message to recursively move through the tree following that 
+    # Tree used to encode to message to recursively move through the tree following that
     # path direction specified by each integer of the encoded message until a leaf node
-    # is hit. The character at this leaf node is added to the decoded message, and the 
+    # is hit. The character at this leaf node is added to the decoded message, and the
     # process starts again at the next index of the encoded message.
     def decode(self, code):
         if not self.get_root():
             return ""
+
+        if len(code) == 0:
+            return self.root.get_letter() * self.root.get_frequency()
+
         return self._decode(code, self.root, 0, "")
 
     # Recursive portion of the above function.
@@ -320,14 +329,14 @@ class HuffmanTree:
         if index == len(code):
             data += node.get_letter()
             return data
-        
+
         # Checks if at a leaf node, and if so, adds the character at the leaf node
         # to the decoded message. Then, the next cycle is started with the next index.
         if not node.has_left_child() and not node.has_right_child():
             data += node.get_letter()
             data = self._decode(code, self.root, index, data)
 
-        # Moves left or right on the Huffman Tree depending on the encoded character at 
+        # Moves left or right on the Huffman Tree depending on the encoded character at
         # the specified position if not at a leaf node.
         elif node.has_left_child() and code[index] == "0":
             data = self._decode(code, node.get_left_child(), index + 1, data)
@@ -336,45 +345,45 @@ class HuffmanTree:
             data = self._decode(code, node.get_right_child(), index + 1, data)
 
         return data
-    
+
     # For debugging Tree.
     def __repr__(self):
         level = 0
         q = Queue()
         visit_order = list()
         node = self.get_root()
-        q.enq( (node,level) )
+        q.enq((node, level))
         while(len(q) > 0):
             node, level = q.deq()
             if node == None:
-                visit_order.append( ("<empty>", level))
+                visit_order.append(("<empty>", level))
                 continue
-            visit_order.append( (node, level) )
+            visit_order.append((node, level))
             if node.has_left_child():
-                q.enq( (node.get_left_child(), level +1 ))
+                q.enq((node.get_left_child(), level + 1))
             else:
-                q.enq( (None, level +1) )
+                q.enq((None, level + 1))
 
             if node.has_right_child():
-                q.enq( (node.get_right_child(), level +1 ))
+                q.enq((node.get_right_child(), level + 1))
             else:
-                q.enq( (None, level +1) )
+                q.enq((None, level + 1))
 
         s = "Tree\n"
         previous_level = -1
         for i in range(len(visit_order)):
             node, level = visit_order[i]
             if level == previous_level:
-                s += " | " + str(node) 
+                s += " | " + str(node)
             else:
                 s += "\n" + str(node)
                 previous_level = level
 
-                
         return s
 
-# Map for storing frequency that each character appears in a message.
+
 class Map:
+    # Map for storing frequency that each character appears in a message.
     def __init__(self):
         self.map = dict()
 
@@ -387,10 +396,10 @@ class Map:
 
     def get(self, key):
         return self.map.get(key)
-    
+
     def get_map(self):
         return self.map
-    
+
     # For debugging Map.
     def __repr__(self):
         string = "Hash Map: \n"
@@ -398,13 +407,15 @@ class Map:
             string += str(key) + ': ' + str(value) + '\n'
         return string
 
-# Encodes a message.
+
 def huffman_encoding(data):
+    # Encodes a message.
+
     # Builds a character to frequency of the character map.
     frequency_map = Map()
     for char in data:
         frequency_map.insert(char)
-    
+
     # Puts the key, value pairs from the frequency map into a priority queue (min heap).
     min_heap = MinHeap()
     for char, freq in frequency_map.get_map().items():
@@ -418,7 +429,7 @@ def huffman_encoding(data):
     encoded_data = huffman_tree.encode(data)
 
     return encoded_data, merged_node
-    
+
 
 def huffman_decoding(data, tree):
     huffman_tree = HuffmanTree(tree)
@@ -426,66 +437,97 @@ def huffman_decoding(data, tree):
     # Decodes message using the corresponding Huffman Tree.
     return huffman_tree.decode(data)
 
+
 if __name__ == "__main__":
-    print("Test 1: ")
-    codes = {}
+    # print("Test 1: ")
+    # codes = {}
 
-    a_great_sentence = "The bird is the word"
+    # a_great_sentence = "The bird is the word"
 
-    print ("The size of the data is: {}".format(sys.getsizeof(a_great_sentence)))
-    print ("The content of the data is: {}\n".format(a_great_sentence))
-    # 69, The bird is the word
+    # print("The size of the data is: {}".format(
+    #     sys.getsizeof(a_great_sentence)))
+    # print("The content of the data is: {}\n".format(a_great_sentence))
+    # # 69, The bird is the word
 
-    encoded_data, tree = huffman_encoding(a_great_sentence)
+    # encoded_data, tree = huffman_encoding(a_great_sentence)
 
-    print ("The size of the encoded data is: {}".format(sys.getsizeof(int(encoded_data, base=2))))
-    print ("The content of the encoded data is: {}\n".format(encoded_data))
-    # 36, 1110001010111011101111110000011011110110110001001010111001110011100000
+    # print("The size of the encoded data is: {}".format(
+    #     sys.getsizeof(int(encoded_data, base=2))))
+    # print("The content of the encoded data is: {}\n".format(encoded_data))
+    # # 36, 1110001010111011101111110000011011110110110001001010111001110011100000
 
-    decoded_data = huffman_decoding(encoded_data, tree)
+    # decoded_data = huffman_decoding(encoded_data, tree)
 
-    print ("The size of the decoded data is: {}".format(sys.getsizeof(decoded_data)))
-    print ("The content of the encoded data is: {}\n".format(decoded_data))
-    # 69, The bird is the word
+    # print("The size of the decoded data is: {}".format(
+    #     sys.getsizeof(decoded_data)))
+    # print("The content of the encoded data is: {}\n".format(decoded_data))
+    # # 69, The bird is the word
 
     print("Test 2: ")
     codes2 = {}
 
     letter = "A"
 
-    print ("The size of the data is: {}".format(sys.getsizeof(letter)))
-    print ("The content of the data is: {}\n".format(letter))
+    print("The size of the data is: {}".format(sys.getsizeof(letter)))
+    print("The content of the data is: {}\n".format(letter))
     # 50, A
 
-    encoded_data2, tree = huffman_encoding(letter)
+    encoded_data2, tree2 = huffman_encoding(letter)
 
-    print ("The size of the encoded data is: {}".format(sys.getsizeof(encoded_data2)))
-    print ("The content of the encoded data is: '{}'\n".format(encoded_data2))
+    print("The size of the encoded data is: {}".format(
+        sys.getsizeof(encoded_data2)))
+    print("The content of the encoded data is: '{}'\n".format(encoded_data2))
     # 49,''
 
-    decoded_data2 = huffman_decoding(encoded_data2, tree)
+    decoded_data2 = huffman_decoding(encoded_data2, tree2)
 
-    print ("The size of the decoded data is: {}".format(sys.getsizeof(decoded_data2)))
-    print ("The content of the encoded data is: {}\n".format(decoded_data2))
+    print("The size of the decoded data is: {}".format(
+        sys.getsizeof(decoded_data2)))
+    print("The content of the encoded data is: {}\n".format(decoded_data2))
     # 50, A
 
     print("Test 3: ")
-    codes = {}
+    codes3 = {}
 
     empty = ""
 
-    print ("The size of the data is: {}".format(sys.getsizeof(empty)))
-    print ("The content of the data is: '{}'\n".format(empty))
+    print("The size of the data is: {}".format(sys.getsizeof(empty)))
+    print("The content of the data is: '{}'\n".format(empty))
     # 49, ''
 
-    encoded_data, tree = huffman_encoding(empty)
+    encoded_data3, tree3 = huffman_encoding(empty)
 
-    print ("The size of the encoded data is: {}".format(sys.getsizeof(encoded_data)))
-    print ("The content of the encoded data is: '{}'\n".format(encoded_data))
+    print("The size of the encoded data is: {}".format(
+        sys.getsizeof(encoded_data3)))
+    print("The content of the encoded data is: '{}'\n".format(encoded_data3))
     # 49, ''
 
-    decoded_data = huffman_decoding(encoded_data, tree)
+    decoded_data3 = huffman_decoding(encoded_data3, tree3)
 
-    print ("The size of the decoded data is: {}".format(sys.getsizeof(decoded_data)))
-    print ("The content of the encoded data is: '{}'\n".format(decoded_data))
+    print("The size of the decoded data is: {}".format(
+        sys.getsizeof(decoded_data3)))
+    print("The content of the encoded data is: '{}'\n".format(decoded_data3))
     # 49, ''
+
+    print("Test 4: ")
+    codes4 = {}
+
+    repeat_letter = "AAAAA"
+
+    print("The size of the data is: {}".format(sys.getsizeof(repeat_letter)))
+    print("The content of the data is: {}\n".format(repeat_letter))
+    # 54, AAAAA
+
+    encoded_data4, tree4 = huffman_encoding(repeat_letter)
+
+    print("The size of the encoded data is: {}".format(
+        sys.getsizeof(encoded_data4)))
+    print("The content of the encoded data is: {}\n".format(encoded_data4))
+    # 50, 1110001010111011101111110000011011110110110001001010111001110011100000
+
+    decoded_data4 = huffman_decoding(encoded_data4, tree4)
+
+    print("The size of the decoded data is: {}".format(
+        sys.getsizeof(decoded_data4)))
+    print("The content of the encoded data is: {}\n".format(decoded_data4))
+    # 54, AAAAA

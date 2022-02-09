@@ -21,6 +21,8 @@ class Group(object):
 
 # Recursively looks the a directory and its subdirectories
 # to return a boolean if teh input user is in the input group
+
+
 def is_user_in_group(user, group):
     """
     Return True if user is in the group, False otherwise.
@@ -31,7 +33,7 @@ def is_user_in_group(user, group):
     """
     if user in group.get_users():
         return True
-    
+
     # Recursively calls is_user_in_group for each sub directory
     for sub_group in group.get_groups():
         in_group = is_user_in_group(user, sub_group)
@@ -39,6 +41,7 @@ def is_user_in_group(user, group):
             return True
 
     return False
+
 
 parent = Group("parent")
 child = Group("child")
@@ -60,3 +63,7 @@ user = "user"
 parent.add_user(user)
 print(is_user_in_group('user', parent))
 # True
+
+sub_sub_child = Group("subsubchild")
+print(is_user_in_group('user', sub_sub_child))
+# false

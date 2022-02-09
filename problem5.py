@@ -2,15 +2,16 @@ import hashlib
 import json
 from datetime import datetime
 
+
 class Block:
 
     def __init__(self, timestamp, data, previous_hash):
-      self.timestamp = timestamp
-      self.data = data
-      self.previous_hash = previous_hash
-      self.hash = self.calc_hash()
-      self.prev = None
-    
+        self.timestamp = timestamp
+        self.data = data
+        self.previous_hash = previous_hash
+        self.hash = self.calc_hash()
+        self.prev = None
+
     # Hashes block data
     def calc_hash(self):
         sha = hashlib.sha256()
@@ -23,7 +24,7 @@ class Block:
         sha.update(hash_str)
 
         return sha.hexdigest()
-    
+
     def set_prev(self, block):
         self.prev = block
 
@@ -31,10 +32,11 @@ class Block:
         return self.prev
 
     def get_hash(self):
-        return self.hash   
+        return self.hash
 
-# Block chain using a linked list.
+
 class BlockChain:
+    # Block chain using a linked list.
     def __init__(self):
         self.head = None
         self.tail = None
@@ -46,7 +48,8 @@ class BlockChain:
             self.tail = self.head
             self.size += 1
         else:
-            new_block = Block(datetime.now().timestamp(), data, self.tail.get_hash())
+            new_block = Block(datetime.now().timestamp(),
+                              data, self.tail.get_hash())
             new_block.set_prev(self.tail)
             self.tail = new_block
             self.size += 1
@@ -64,15 +67,16 @@ class BlockChain:
         count = self.size - 1
         while block:
             block_info = json.dumps(
-                vars(block), 
-                default=lambda o: f'<Block {count-1}>', 
+                vars(block),
+                default=lambda o: f'<Block {count-1}>',
                 indent=4
             )
             string += f"\nBlock {count}: \n{block_info}\n"
             count -= 1
             block = block.get_prev()
-        
+
         return string
+
 
 if __name__ == "__main__":
     print("Test 1:")
@@ -120,3 +124,19 @@ if __name__ == "__main__":
     print(chain)
     # Block Chain
     # _____________________
+
+    print("Test 2:")
+    chain = BlockChain()
+    chain.add_block('')
+    print(chain)
+
+    # Block Chain
+    # _____________________
+    # Block 0:
+    # {
+    #     "timestamp": 1644373762.11089,
+    #     "data": "",
+    #     "previous_hash": 0,
+    #     "hash": "d58d8dd3e4a387430e847a74c5cc2820678b57c07be18c17333cb9e58a91e1e6",
+    #     "prev": null
+    # }
