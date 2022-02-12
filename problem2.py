@@ -48,8 +48,14 @@ print('Test 2: ', find_files('testdir', '.h'))
 print('Test 3: ', find_files('testdir', '.q'))
 # Test 3:  ['t1.q']
 
-print('Test 3: ', find_files('p10', '.q'))
-# Test 3:  ['t1.q']
+# Directory doesn't exist
+print('Test 4: ', find_files('p10', '.q'))
+# Test 4:  ['t1.q']
 
-print('Test 3: ', find_files('testdir2', '.q'))
-# Test 3:  ['t1.q']
+# Empty Directory
+print('Test 5: ', find_files('testdir2', '.q'))
+# Test 5:  ['t1.q']
+
+# No files with file extension
+print('Test 6: ', find_files('testdir2', 'qpr'))
+# Test 6:  ['t1.q']
